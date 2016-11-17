@@ -7,23 +7,25 @@
 	  	<title>orbitals</title>
 	</head>
 	<body>
-	    <div id="demo"></div>
+	    <div id="system"></div>
 		<script type="text/javascript">
 			functionPlot({
-		  		target: '#demo',
-				title: 'Raspodela verovatnoce nalazenja elektrona - 1S orbitala',
+				title: 'Orbitala 1S',
+				target: '#system',
 				width: 800,
 				height: 600,
 				xAxis: {
-					label: 'r',
-				},
-				yAxis: {
-					label: 'W'
+				    label: 'r',
+					domain: [0, 6],
+			  	},
+			  	yAxis: {
+					label: 'W',
+					domain: [0, 1]
 				},
 				data: [{
-			 	   	fn: '4 / ((5.3 * 10^(-11))^3) * x^2 * 2.71^(2 * x / 5.3 * 10^(-11))',
+					fn: 'x^2 * 4 * 2.71^(-2 * x)'
 				}]
-		});
+			})
 		</script>
 	</body>
 </html>
