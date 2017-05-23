@@ -1,78 +1,81 @@
 <DOCTYPE html>
-<html>
-	<head>
-		<script src="http://d3js.org/d3.v3.min.js"></script>
-  		<script src="http://maurizzzio.github.io/function-plot/js/function-plot.js"></script>
-    	<meta charset="utf-8">
-	  	<title>orbitals</title>
-		<style>
-			#system {
-				position: absolute;
-				left: 50%;
-				top: 50%;
-				width: 800px;
-			  	height: 600px;
-			    margin-left: -400px;
-				margin-top: -300px;
-			}
+    <html>
 
-			body {
-				background-color: #ecf0f1;
-			}
+    <head>
+        <script src="http://d3js.org/d3.v3.min.js"></script>
+        <script src="https://wzrd.in/standalone/function-plot@1.17.3"></script>
+        <meta charset="utf-8">
+        <title>orbitals</title>
+        <style>
+            #system {
+                position: absolute;
+                left: 50%;
+                top: 50%;
+                width: 800px;
+                height: 600px;
+                margin-left: -400px;
+                margin-top: -300px;
+            }
+            
+            body {
+                background-color: #ecf0f1;
+            }
+            
+            p {
+                color: gray;
+            }
+        </style>
+    </head>
 
-			p {
-				color: gray;	
-			}
-		</style>
-	</head>
-	<body>
-		<p>@jelic.ecloga</p>
-	    <div id="system"></div>
-		<script type="text/javascript">
-			functionPlot({
-				title: '[1S, 2S, 2P, 3S, 3P]',
-				target: '#system',
-				width: 800,
-				height: 600,
-				xAxis: {
-				    label: 'r',
-					domain: [0, 25]
-			  	},
-			  	yAxis: {
-					label: 'W',
-					domain: [0, 1]
+    <body>
+        <p>@jelic.ecloga</p>
+        <div id="system"></div>
+        <script type="text/javascript">
+            functionPlot({
+                title: '[1S, 2S, 2P, 3S, 3P]',
+                target: '#system',
+                width: 800,
+                height: 600,
+                xAxis: {
+                    label: 'r',
+                    domain: [0, 25]
+                },
+                yAxis: {
+                    label: 'W',
+                    domain: [0, 1]
+                },
+                tip: {
+                    xLine: true,
+                    yLine: true,
+                },
+                data: [
+                    {
+                        fn: 'x^2 * 4 * 2.718^(-2 * x)',
+                        graphType: 'polyline',
+                        color: 'blue'
 				},
-				tip: {
-					xLine: true,
-					yLine: true,
+                    {
+                        fn: 'x^2 * 0.5 * 2.718^(-x) * (1 - (x / 2))^2',
+                        graphType: 'polyline',
+                        color: 'red'
 				},
-				data: [
-				{
-					fn: 'x^2 * 4 * 2.718^(-2 * x)',
-					graphType: 'polyline',
-					color: 'blue'
+                    {
+                        fn: 'x^4 * 0.042 * 2.718^(-x)',
+                        graphType: 'polyline',
+                        color: 'orange'
 				},
-				{
-				 	fn: 'x^2 * 0.5 * 2.718^(-x) * (1 - (x / 2))^2',
-					graphType: 'polyline',         
-					color: 'red'  	
+                    {
+                        fn: 'x^2 * 4 / 27 * (1 - x * (2 / 3) + x^2 * 2 / 27)^2 * 2.718^(-2 * x / 3)',
+                        graphType: 'polyline',
+                        color: 'green'
 				},
-				{
-				 	fn: 'x^4 * 0.042 * 2.718^(-x)',
-					graphType: 'polyline',         
-					color: 'orange'  	
-				},
-				{
-				 	fn: 'x^2 * 4 / 27 * (1 - x * (2 / 3) + x^2 * 2 / 27)^2 * 2.718^(-2 * x / 3)',
-					graphType: 'polyline',         
-					color: 'green'  	
-				},
-				{
-				 	fn: 'x^4 * 32 / 2187 * (1 - (x / 6))^2 * 2.718^(-2 * x / 3)',
-					graphType: 'polyline',         
-					color: 'aqua'  	
+                    {
+                        fn: 'x^4 * 32 / 2187 * (1 - (x / 6))^2 * 2.718^(-2 * x / 3)',
+                        graphType: 'polyline',
+                        color: 'aqua'
 				}]
-			})
-		</script>
-	</body>
-</html>
+            })
+        </script>
+    </body>
+
+    </html>
