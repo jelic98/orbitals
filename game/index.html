@@ -1,0 +1,238 @@
+<html>
+
+<head>
+    <title>Game of Life</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css?family=Barrio');
+        body {
+            font-family: 'Barrio', cursive;
+            font-size: 20pt;
+            background: #ecf0f1;
+            text-align: center;
+        }
+        
+        #wrapper {
+            background: rgb(44, 62, 80);
+            position: relative;
+            height: 500px;
+            width: 500px;
+            margin: 0 auto;
+            display: block;
+        }
+        
+        h1 {
+            margin: 25px;
+        }
+        
+        p {
+            color: #7f8c8d;
+        }
+        
+        div {
+            position: relative;
+            width: 10px;
+            height: 10px;
+            display: inline-block;
+        }
+        
+        p {
+            font-size: 20px;
+        }
+        
+        #info {
+            width: 500px;
+            height: auto;
+        }
+        
+        button {
+            margin-top: 10px;
+            padding: 15px 32px;
+            border-radius: 4px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            color: #fff;
+            border: none;
+            -webkit-transition-duration: 0.4s;
+            transition-duration: 0.4s;
+            cursor: pointer;
+        }
+        
+        #check {
+            background-color: #3498db;
+        }
+        
+        #reset {
+            background-color: #2ecc71;
+        }
+        
+        button:hover {
+            box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Create your own universe!</h1>
+    <div id="wrapper"></div>
+    <button id="check" onclick="check()">Start</button>
+    <button id="reset" onclick="reset()">Reset</button>
+    <br/>
+    <div id="info">
+        <p>Draw random stuff on the blue canvas.
+            <br/>Click "Start" to animate life.
+            <br/>If not satisfied, click "Reset".
+            <br/>Simple!</p>
+    </div>
+    <script>
+        function simulate() {
+            if (!stop) {
+                for (var i = 1; i < 49; i++) {
+                    for (var j = 1; j < 49; j++) {
+                        counter = 0;
+
+                        for (var q = 1; q < 9; q++) {
+                            copy_i = i;
+                            copy_j = j;
+
+                            switch (q) {
+                            case 1:
+                                copy_i--;
+                                copy_j--;
+                                break;
+                            case 2:
+                                copy_i--;
+                                break;
+                            case 3:
+                                copy_i--;
+                                copy_j++;
+                                break;
+                            case 4:
+                                copy_j++;
+                                break;
+                            case 5:
+                                copy_i++;
+                                copy_j++;
+                                break;
+                            case 6:
+                                copy_i++;
+                                break;
+                            case 7:
+                                copy_i++;
+                                copy_j--;
+                                break;
+                            case 8:
+                                copy_j--;
+                                break;
+                            }
+
+                            if (y[copy_i][copy_j].style.backgroundColor == yellow) {
+                                counter++;
+                            }
+                        }
+
+                        if (x[i][j].style.backgroundColor == yellow) {
+                            if (counter < 2 || counter > 3) {
+                                x[i][j].style.backgroundColor = blue;
+                            }
+                        } else {
+                            if (counter == 3) {
+                                x[i][j].style.backgroundColor = yellow;
+                            }
+                        }
+                    }
+                }
+
+                y = x;
+            }
+        }
+
+        function onMouseOver(e) {
+            if (isDown) {
+                var id = e.id;
+                document.getElementById(id).style.backgroundColor = yellow;
+            }
+        }
+
+        function reset() {
+            stopSimulation();
+
+            for (var i = 0; i < 50; i++) {
+                for (var j = 0; j < 50; j++) {
+                    var id = i.toString() + "~" + j.toString();
+                    x[i][j].style.backgroundColor = blue;
+                }
+            }
+        }
+
+        function startSimulation() {
+            stop = false;
+            looper = setInterval(simulate, 125);
+            document.getElementById("check").innerHTML = "Stop";
+            document.getElementById("check").style.backgroundColor = "#e74c3c";
+        }
+
+        function stopSimulation() {
+            stop = true;
+            clearInterval(looper);
+            document.getElementById("check").innerHTML = "Start";
+            document.getElementById("check").style.backgroundColor = "#3498db";
+        }
+
+        function check() {
+            if (stop) {
+                startSimulation();
+            } else {
+                stopSimulation();
+            }
+        }
+
+        var x = new Array(50);
+        var y = new Array(50);
+        var h, w, rand_i, rand_j, q, counter, dif, num;
+
+        h = 50;
+        w = 50;
+        num = 0;
+
+        var copy_i, copy_j, looper;
+        var dif = 1;
+        var stop = true;
+        var yellow = "rgb(241, 196, 15)";
+        var blue = "rgb(44, 62, 80)";
+        var mouseDown = false;
+
+
+        for (var i = 0; i < 50; i++) {
+            x[i] = new Array(50);
+        }
+
+        for (var i = 0; i < 50; i++) {
+            for (var j = 0; j < 50; j++) {
+                var id = i.toString() + "~" + j.toString();
+                x[i][j] = document.createElement("div");
+                x[i][j].setAttribute("id", id);
+                x[i][j].setAttribute("onmouseover", "onMouseOver(this)");
+                document.getElementById("wrapper").appendChild(x[i][j]);
+                var posX = document.getElementById("wrapper").offsetLeft + x[i][j].offsetLeft;
+                var posY = document.getElementById("wrapper").offsetTop + x[i][j].offsetTop;
+                x[i][j].setAttribute("class", posX.toString() + "~" + posY.toString());
+            }
+        }
+
+        y = x;
+
+        var isDown = false;
+
+        document.body.onmousedown = function () {
+            isDown = true;
+        }
+
+        document.body.onmouseup = function () {
+            isDown = false;
+        }
+    </script>
+</body>
+
+</html>

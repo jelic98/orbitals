@@ -1,0 +1,387 @@
+<html>
+	<head>
+		<title>Optika</title>
+		<script src="jquery-1.12.3.min.js"></script>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<style>
+			body {
+				font-family: "Source Sans Pro", sans-serif;
+				font-size: 20pt;
+				background: #bdc3c7;
+				text-align: center;
+			}
+
+			#wrapper {
+				position: absolute;
+				left: 50vw;
+				top: 50vh;   
+				background: #ecf0f1;
+				width: 100vw;
+				height: 100vh;
+				margin-left: -50vw; 
+				margin-top: -50vh; 
+				cursor: none;
+				z-index: 0;
+			}
+
+			#base {
+				stroke: #34495e;
+				stroke-width: 3;
+			}
+
+			#center {
+				fill: #2ecc71;
+			}
+
+			#focus {
+				fill: #e74c3c;
+			}
+
+			#figure {
+				stroke: #34495e;
+				stroke-width: 5;
+			}
+
+			#reflect {
+				stroke: #bdc3c7;
+				stroke-width: 5;
+			}
+
+			.first {
+				stroke: #3498db;
+				stroke-width: 1;
+			}
+
+			.second {
+				stroke: #e74c3c;
+				stroke-width: 1;
+			}
+
+			.third {
+				stroke: #2ecc71;
+				stroke-width: 1;
+			}
+
+			.fourth {
+				stroke: #f39c12;
+				stroke-width: 1;
+			}
+
+			p {
+				z-index: 1;
+				position: relative;
+				top: 0;
+				left: 0;
+				font-size: 20;
+			}
+		</style>
+	</head>
+	<body>
+		<p id="msg">lik(realan, obrnut, umanjen)</p>
+		<svg id="wrapper">
+			<text x="15" y="30" font-size="17" fill="#34495e">@jelic.ecloga</text>
+		</svg>
+		<script>
+			var pageHeight = $(document).height();
+			var pageWidth = $(document).width();
+
+			var wrapperHeight = pageHeight;
+			var wrapperWidth = pageWidth;
+
+			var baseX1 = 0;
+			var baseX2 = wrapperWidth;
+			var baseY = $("#wrapper").height() / 2;
+
+			var centerX = baseX2 / 3;
+			var centerY = baseY;
+			var centerDiameter = 5;
+
+			var focusX = (baseX2 + centerX) / 2;
+			var focusY = baseY;
+			var focusDiameter = 5;
+
+			var cursorX = centerX / 2;
+			var cursorY = $("#wrapper").height() / 4;
+
+			var firstInX1 = cursorX;
+			var firstInX2 = baseX2;
+			var firstInY = cursorY;
+
+			var firstMiddleX1 = firstInX2;
+			var firstMiddleX2 = focusX;
+			var firstMiddleY1 = firstInY;
+			var firstMiddleY2 = focusY;
+
+			var firstOutX1 = focusX;
+			var firstOutX2 = baseX1;
+			var firstOutY1 = focusY;
+			var firstOutY2 = baseY + (baseY - cursorY) * focusX / Math.abs(baseX2 - focusX);
+
+			var secondInX1 = cursorX;
+			var secondInX2 = focusX;
+			var secondInY1 = cursorY;
+			var secondInY2 = focusY;
+
+			var secondMiddleX1 = secondInX2;
+			var secondMiddleX2 = baseX2;
+			var secondMiddleY1 = secondInY2;
+			var secondMiddleY2 = baseY + Math.abs(baseY - cursorY) * Math.abs(centerX - focusX) / Math.abs(focusX - cursorX);
+
+			var secondOutX1 = secondMiddleX2;
+			var secondOutX2 = baseX1;
+			var secondOutY = secondMiddleY2;
+
+			var thirdInX1 = cursorX;
+			var thirdInX2 = centerX;
+			var thirdInY1 = cursorY;
+			var thirdInY2 = centerY;
+
+			var thirdOutX1 = centerX;
+			var thirdOutX2 = baseX2;
+			var thirdOutY1 = centerY;
+			var thirdOutY2 = baseY + Math.abs(baseX2 - centerX) * (baseY - cursorY) / Math.abs(centerX - cursorX);
+
+			var fourthInX1 = cursorX;
+			var fourthInX2 = baseX2;
+			var fourthInY1 = cursorY;
+			var fourthInY2 = baseY;
+
+			var fourthOutX1 = fourthInX2;
+			var fourthOutX2 = baseX1;
+			var fourthOutY1 = fourthInY2;
+			var fourthOutY2 = baseY + (baseY - cursorY) * baseX2 / Math.abs(baseX2 - cursorX);
+
+			var x11 = focusX;
+			var x12 = baseX1;
+			var y11 = focusY;
+			var y12 = baseY + (baseY - cursorY) * focusX / Math.abs(baseX2 - focusX);
+
+			var x21 = fourthInX2;
+			var x22 = baseX1;
+			var y21 = fourthInY2;
+			var y22 = baseY + (baseY - cursorY) * baseX2 / Math.abs(baseX2 - cursorX);
+
+			var k1 = (y12 - y11) / (x12 - x11);
+			var k2 = (y22 - y21) / (x22 - x21);
+
+			var x = (y21 - y11 + k1 * x11 - k2 * x21) / (k1 - k2);
+			var y = (k1 * (y21 - k2 * x21) + k2 * (k1 * x11 - y11)) / (k1 - k2);
+
+			var reflectX1 = x;
+			var reflectX2 = x;
+			var reflectY1 = baseY;
+			var reflectY2 = y;
+
+			var base = document.createElementNS("http://www.w3.org/2000/svg", "line");
+			base.setAttribute("id", "base");
+			base.setAttribute("x1", baseX1);
+			base.setAttribute("y1", baseY);
+			base.setAttribute("x2", baseX2);
+			base.setAttribute("y2", baseY);
+
+			var center = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+			center.setAttribute("id", "center");
+			center.setAttribute("cx", centerX);
+			center.setAttribute("cy", centerY);
+			center.setAttribute("r", centerDiameter);
+
+			var focus = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+			focus.setAttribute("id", "focus");
+			focus.setAttribute("cx", focusX);
+			focus.setAttribute("cy", focusY);
+			focus.setAttribute("r", focusDiameter);
+
+			var figure = document.createElementNS("http://www.w3.org/2000/svg", "line");
+			figure.setAttribute("id", "figure");
+			figure.setAttribute("x1", cursorX);
+			figure.setAttribute("y1", baseY);
+			figure.setAttribute("x2", cursorX);
+			figure.setAttribute("y2", cursorY);
+
+			var firstIn = document.createElementNS("http://www.w3.org/2000/svg", "line");
+			firstIn.setAttribute("class", "first");
+			firstIn.setAttribute("x1", firstInX1);
+			firstIn.setAttribute("y1", firstInY);
+			firstIn.setAttribute("x2", firstInX2);
+			firstIn.setAttribute("y2", firstInY);
+
+			var firstMiddle = document.createElementNS("http://www.w3.org/2000/svg", "line");
+			firstMiddle.setAttribute("class", "first");
+			firstMiddle.setAttribute("x1", firstMiddleX1);
+			firstMiddle.setAttribute("y1", firstMiddleY1);
+			firstMiddle.setAttribute("x2", firstMiddleX2);
+			firstMiddle.setAttribute("y2", firstMiddleY2);
+
+			var firstOut = document.createElementNS("http://www.w3.org/2000/svg", "line");
+			firstOut.setAttribute("class", "first");
+			firstOut.setAttribute("x1", firstOutX1);
+			firstOut.setAttribute("y1", firstOutY1);
+			firstOut.setAttribute("x2", firstOutX2);
+			firstOut.setAttribute("y2", firstOutY2);
+
+			var secondIn = document.createElementNS("http://www.w3.org/2000/svg", "line");
+			secondIn.setAttribute("class", "second");
+			secondIn.setAttribute("x1", secondInX1);
+			secondIn.setAttribute("y1", secondInY1);
+			secondIn.setAttribute("x2", secondInX2);
+			secondIn.setAttribute("y2", secondInY2);
+
+			var secondMiddle = document.createElementNS("http://www.w3.org/2000/svg", "line");
+			secondMiddle.setAttribute("class", "second");
+			secondMiddle.setAttribute("x1", secondMiddleX1);
+			secondMiddle.setAttribute("y1", secondMiddleY1);
+			secondMiddle.setAttribute("x2", secondMiddleX2);
+			secondMiddle.setAttribute("y2", secondMiddleY2);
+
+			var secondOut = document.createElementNS("http://www.w3.org/2000/svg", "line");
+			secondOut.setAttribute("class", "second");
+			secondOut.setAttribute("x1", secondOutX1);
+			secondOut.setAttribute("y1", secondOutY);
+			secondOut.setAttribute("x2", secondOutX2);
+			secondOut.setAttribute("y2", secondOutY);
+
+			var thirdIn = document.createElementNS("http://www.w3.org/2000/svg", "line");
+			thirdIn.setAttribute("class", "third");
+			thirdIn.setAttribute("x1", thirdInX1);
+			thirdIn.setAttribute("y1", thirdInY1);
+			thirdIn.setAttribute("x2", thirdInX2);
+			thirdIn.setAttribute("y2", thirdInY2);
+
+			var thirdOut = document.createElementNS("http://www.w3.org/2000/svg", "line");
+			thirdOut.setAttribute("class", "third");
+			thirdOut.setAttribute("x1", thirdOutX1);
+			thirdOut.setAttribute("y1", thirdOutY1);
+			thirdOut.setAttribute("x2", thirdOutX2);
+			thirdOut.setAttribute("y2", thirdOutY2);
+
+			var fourthIn = document.createElementNS("http://www.w3.org/2000/svg", "line");
+			fourthIn.setAttribute("class", "fourth");
+			fourthIn.setAttribute("x1", fourthInX1);
+			fourthIn.setAttribute("y1", fourthInY1);
+			fourthIn.setAttribute("x2", fourthInX2);
+			fourthIn.setAttribute("y2", fourthInY2);
+
+			var fourthOut = document.createElementNS("http://www.w3.org/2000/svg", "line");
+			fourthOut.setAttribute("class", "fourth");
+			fourthOut.setAttribute("x1", fourthOutX1);
+			fourthOut.setAttribute("y1", fourthOutY1);
+			fourthOut.setAttribute("x2", fourthOutX2);
+			fourthOut.setAttribute("y2", fourthOutY2);
+
+			var reflect = document.createElementNS("http://www.w3.org/2000/svg", "line");
+			reflect.setAttribute("id", "reflect");
+			reflect.setAttribute("x1", reflectX1);
+			reflect.setAttribute("y1", reflectY1);
+			reflect.setAttribute("x2", reflectX2);
+			reflect.setAttribute("y2", reflectY2);
+
+			$(document).ready(function() {
+				$("#wrapper").append(base);
+				$("#wrapper").append(center);
+				$("#wrapper").append(focus);
+				$("#wrapper").append(figure);
+				$("#wrapper").append(firstIn);
+				$("#wrapper").append(firstMiddle);
+				$("#wrapper").append(firstOut);
+				$("#wrapper").append(secondIn);
+				$("#wrapper").append(secondMiddle);
+				$("#wrapper").append(secondOut);
+				$("#wrapper").append(thirdIn);
+				$("#wrapper").append(thirdOut);
+				$("#wrapper").append(fourthIn);
+				$("#wrapper").append(fourthOut);
+				$("#wrapper").append(reflect);
+			});
+
+			$(document).mousemove(function(e){
+				cursorX = e.pageX - $("#wrapper").offset().left;
+				cursorY = e.pageY - $("#wrapper").offset().top;
+
+				cursorX = e.pageX - $("#wrapper").offset().left;
+				cursorY = e.pageY - $("#wrapper").offset().top;
+
+				console.log(Math.round(centerX));
+
+				if(cursorX < Math.round(centerX)) {
+					$("#msg").html("lik(realan, obrnut, umanjen)");
+				}else if(cursorX == Math.round(centerX)) {
+					$("#msg").html("lik(realan, obrnut, jednak)");
+				}else if(cursorX > Math.round(centerX) && cursorX < Math.round(focusX)) {
+					$("#msg").html("lik(realan, obrnut, uvecan)");
+				}else if(cursorX == Math.round(focusX)) {
+					$("#msg").html("lik(formiran u beskonacnosti)");
+				}else if(cursorX > Math.round(focusX)) {
+					$("#msg").html("lik(imaginaran, uspravan, uvecan)");
+				}
+
+				figure.setAttribute("x1", cursorX);
+				figure.setAttribute("x2", cursorX);
+				figure.setAttribute("y2", cursorY);
+
+				firstIn.setAttribute("x1", cursorX);
+				firstIn.setAttribute("y1", cursorY);
+				firstIn.setAttribute("y2", cursorY);
+
+				firstMiddle.setAttribute("y1", cursorY);
+
+				firstOut.setAttribute("y2", baseY + (baseY - cursorY) * focusX / Math.abs(baseX2 - focusX));
+
+				if(cursorX <= Math.round(focusX)) {
+					secondIn.setAttribute("x1", cursorX);
+					secondIn.setAttribute("y1", cursorY);
+
+					secondMiddle.setAttribute("x2", baseX2);
+					secondMiddle.setAttribute("y2", baseY + (baseY - cursorY) * Math.abs(centerX - focusX) / Math.abs(focusX - cursorX));
+
+					secondOut.setAttribute("y1", baseY + (baseY - cursorY) * Math.abs(centerX - focusX) / Math.abs(focusX - cursorX));
+					secondOut.setAttribute("y2", baseY + (baseY - cursorY) * Math.abs(centerX - focusX) / Math.abs(focusX - cursorX));	
+				}else {
+					secondIn.setAttribute("x1", secondIn.getAttribute("x2"));
+					secondIn.setAttribute("y1", secondIn.getAttribute("y2"));
+
+					secondMiddle.setAttribute("x2", secondMiddle.getAttribute("x1"));
+					secondMiddle.setAttribute("y2", secondMiddle.getAttribute("y1"));
+				}
+
+				if(cursorX <= Math.round(centerX)) {
+					thirdIn.setAttribute("x1", cursorX);
+					thirdIn.setAttribute("y1", cursorY);
+
+					thirdOut.setAttribute("x2", baseX2);
+					thirdOut.setAttribute("y2", baseY + Math.abs(baseX2 - centerX) * (baseY - cursorY) / Math.abs(centerX - cursorX));	
+				}else {
+					thirdIn.setAttribute("x1", thirdIn.getAttribute("x2"));
+					thirdIn.setAttribute("y1", thirdIn.getAttribute("y2"));
+
+					thirdOut.setAttribute("x2", thirdOut.getAttribute("x1"));
+					thirdOut.setAttribute("y2", thirdOut.getAttribute("y1"));
+				}
+
+				fourthIn.setAttribute("x1", cursorX);
+				fourthIn.setAttribute("y1", cursorY);
+
+				fourthOut.setAttribute("y2", baseY + (baseY - cursorY) * baseX2 / Math.abs(baseX2 - cursorX));
+
+				x11 = firstOut.getAttribute("x1");
+				x12 = firstOut.getAttribute("x2");
+				y11 = firstOut.getAttribute("y1");
+				y12 = firstOut.getAttribute("y2");
+
+				x21 = fourthOut.getAttribute("x1");
+				x22 = fourthOut.getAttribute("x2");
+				y21 = fourthOut.getAttribute("y1");
+				y22 = fourthOut.getAttribute("y2");
+
+				k1 = (y12 - y11) / (x12 - x11);
+				k2 = (y22 - y21) / (x22 - x21);
+
+				x = (y21 - y11 + k1 * x11 - k2 * x21) / (k1 - k2);
+				y = (k1 * (y21 - k2 * x21) + k2 * (k1 * x11 - y11)) / (k1 - k2);
+
+				reflect.setAttribute("x1", x);
+				reflect.setAttribute("x2", x);
+				reflect.setAttribute("y2", y);
+			});
+		</script>
+	</body>
+</html>

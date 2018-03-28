@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>What a Mess!</title>
+		<link rel="stylesheet" href="font-awesome-4.6.3/css/font-awesome.min.css">
+		<link rel="stylesheet" href="animate.css">
+		<style>
+			body {
+				font-family: 'Source Sans Pro', sans-serif;
+				font-size: 20pt;
+				background: #ecf0f1;
+				text-align: center;
+				cursor: none;
+			}
+
+			#main {
+				position: absolute;
+				z-index: 3;
+				border-radius: 50%;
+				background: #8e44ad;
+			}
+
+			#hole {
+				position: absolute;
+				z-index: 1;
+				border-radius: 50%;
+				background: #bdc3c7;
+			}
+
+			#info {
+				position: fixed;
+				height: 5vmin;
+				width: 5vmin;
+				top: 2vmin;
+				right: 2vmin;
+				z-index: 4;
+				cursor: auto;
+				color: #bdc3c7; 
+			}
+
+			#message, #information {
+				position: absolute;
+				z-index: 2;
+				height: 50vmin;
+				width: 100%;
+				top: 50%;
+				margin-top: -25vmin;
+				background: #34495e;
+				padding-top: 2vmin;
+				font-size: 5vmin;
+			}
+
+			.button {
+				position: relative;
+				background-color: #2980b9; 
+				border: none;
+				color: #fff;
+				border-radius: 2vmin;
+				padding: 5vmin 7vmin;
+				text-align: center;
+				text-decoration: none;
+				display: inline-block;
+				font-size: 3vmin;
+				margin: 5vmin;
+				-webkit-transition-duration: 0.5s; 
+				transition-duration: 0.5s;
+			}
+
+			.button:hover {
+				background-color: #8e44ad; 
+			}
+
+			.food {
+				position: absolute;
+				z-index: 0;
+				border-radius: 50%;
+				background: #1abc9c;
+			}
+
+			p {
+				color: #fff;
+				margin: 0;
+			}
+
+			#message > .yellow {
+				margin-top: 10vmin;
+			}
+
+			.yellow {
+				color: #f1c40f;
+			}
+
+			img {
+				margin-top: 5vmin;
+				height: 10vmin;
+				width: auto;
+				-webkit-animation-iteration-count: infinite;
+			}
+		</style>
+	</head>
+	<body>
+		<script src="jquery-1.12.3.min.js"></script>
+		<script>
+			var mainDiameter = 100;
+			var foodMax = 25;
+			var foodMin = 5;
+			var totalFood = 50 + Math.floor(Math.random() * 500);	
+			var x = 0;
+			var y = 0;
+			var maxLeft = documentWidth();
+			var maxTop = documentHeight();
+			var messageShown = false;
+			var holeDiameter = 50;
+			var eatenFood = new Array(totalFood);
+			var popupOpen = false;
+
+			for(i = 1; i <= totalFood; i++) {
+				eatenFood[i] = 0;
+			}
+
+			function documentHeight() {
+				return Math.max(
+					document.documentElement.clientHeight,
+					document.documentElement.scrollHeight,
+					document.documentElement.offsetHeight
+				);
+			}
+
+			function documentWidth() {
+				return Math.max(
+					document.documentElement.clientWidth,
+					document.documentElement.scrollWidth,
+					document.documentElement.offsetWidth
+				);
+			}
+
+			function animate(element_ID, animation) {
+				setInterval(function() {
+					$(element_ID).addClass(animation)
+				}, 1000);
+			}
+
+			function reset() {
+				$("#main").remove();
+
+				for(i = 1; i <= totalFood; i++) { 
+					var id = "#" + i;
+					$(id).remove();
+				}
+
+				popupOpen = false;
+
+				$("#main").show();
+				$("#message").fadeOut();
+
+				generateFood();
+			}
+
+
+			function showInfo() {
+				$("#information").fadeTo(500, 1).css("cursor", "auto");
+				$("#main").hide();
+				$("img").each(function() {
+					animate(this, "bounce");
+				});
+				popupOpen = true;
+			}
+
+			function hideInfo() {
+				$("#information").fadeTo(500, 0).css("cursor", "none").hide(500);
+				$("#main").show();
+				popupOpen = false;
+			}
+
+			function generateFood() {
+				$('<div id="main" style="height: ' + mainDiameter + 'px; width: ' + mainDiameter + 'px;"></div>').appendTo("body");
+
+				for(i = 1; i <= totalFood; i++) { 
+					var foodDiameter = foodMin + Math.floor(Math.random() * foodMax);
+					var min = foodDiameter;
+					var left = min + Math.floor(Math.random() * maxLeft);
+					var top = min + Math.floor(Math.random() * maxTop);
+
+					$('<div class="food" id="' + i +  '" style="height: ' + foodDiameter + 'px; width: ' + foodDiameter + 'px; top: ' + top + 'px; left: ' + left + 'px;"></div>').appendTo("body");
+				}
+			}
+			
+			function onMove(x, y) {
+				if(popupOpen == false) {
+					var counter = 0;
+
+					var minX = x - mainDiameter;
+					var minY = y - mainDiameter;
+					var maxX = x + mainDiameter;
+					var maxY = y + mainDiameter;
+
+					for(i = 1; i <= totalFood; i++) { 
+						var id = "#" + i;
+						var mainDistance = Math.sqrt(Math.pow(($(id).offset().left - x), 2) + Math.pow(($(id).offset().top - y), 2));
+
+						if(mainDistance <= mainDiameter) {
+							$(id).stop().animate({left:(maxLeft - $(id).offset().left), top:(maxTop - $(id).offset().top)});
+						}
+
+						var holeDistance = Math.sqrt(Math.pow(($(id).offset().left - ((documentWidth() / 2) - holeDiameter / 2)), 2) 
+													 + Math.pow(($(id).offset().top - ((documentHeight() / 2) - holeDiameter / 2)), 2));
+
+						if(holeDistance > 0 && holeDistance <= holeDiameter) {
+							$(id).fadeTo(500, 0);
+							eatenFood[i] = 1;
+						}
+					}
+				}
+			}
+
+			$(document).ready(function(e) {
+				$('<div id="hole" style="height: ' + holeDiameter + 'px; width: ' + holeDiameter + 'px; left: ' + ((documentWidth() / 2) - 25) + 'px; top: ' + ((documentHeight() / 2) - 25)  + 'px;"><p color="black">aa</p></div>').appendTo("body");
+				$('<div id="message"><p class="yellow">Congratulations!</p><p>Try cleaning your room sometimes.</p><button onclick="reset()" class="button">Make a mess</button></div>').appendTo("body").fadeTo(0, 0).hide();
+				$('<div id="information"><img class="animated bounce" src="utorak.png""><p class="yellow">Instructions:</p><p>Clean the shit up!</p><button onclick="hideInfo()" class="button">Got it</button></div>').appendTo("body").fadeTo(0, 0).hide();
+				$('<i id="info" class="fa fa-info-circle"></i>').appendTo("body");
+
+				generateFood();
+
+				$("#info").click(function() {
+					if($("#information").css("display") == "none") {
+						showInfo();
+					}else {
+						hideInfo();
+					}
+				});
+			});
+
+			$(document).mousemove(function(e){
+				x = e.pageX - parseInt(mainDiameter / 2);
+				y = e.pageY - parseInt(mainDiameter / 2);
+
+				$("#main").css({height:mainDiameter, width:mainDiameter, left:x, top:y});
+
+				onMove(x,y);
+			});
+		</script>
+	</body>
+</html>
