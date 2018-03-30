@@ -1,6 +1,6 @@
 # RandomJS
 
-Tiny apps written in JavaScript
+Tiny apps written in JavaScript.
 
 ### Orbitals
 
@@ -12,7 +12,7 @@ Check it out: http://ecloga.org/orbitals
 
 ### Optika
 
-Lite version of PhET [simulation](https://phet.colorado.edu/sr/simulation/geometric-optics)
+Lite version of PhET [simulation](https://phet.colorado.edu/sr/simulation/geometric-optics).
 
 Check it out: http://ecloga.org/optika
 
@@ -24,6 +24,6 @@ Check it out: http://ecloga.org/game
 
 ### What a Mess!
 
-Browser game for people with OCD written in JavaScript
+Browser game for people with OCD written in JavaScript.
 
 Check it out: http://ecloga.org/mess
