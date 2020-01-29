@@ -1,6 +1,6 @@
 # RandomJS
 
-Tiny apps written in JavaScript.
+Tiny JavaScript applications.
 
 ### Orbitals
 
